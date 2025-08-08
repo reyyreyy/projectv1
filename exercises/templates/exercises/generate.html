@@ -1,0 +1,39 @@
+{% extends 'exercises/base.html' %}
+
+{% block content %}
+<h2>Generate a New Exercise</h2>
+
+{% if error %}
+    <p style="color: red;">{{ error }}</p>
+{% endif %}
+
+<p><strong>Current Difficulty:</strong> {{ difficulty|capfirst }}</p>
+<p><strong>Chemistry Level:</strong> {{ chemistry_level }}</p>
+
+<form method="post" action="{% url 'generate_exercise' %}">
+    {% csrf_token %}
+    
+    <label for="topic">Topic:</label>
+    <select name="topic" id="topic">
+        <option value="chemistry">Chemistry</option>
+        <option value="physics">Physics</option>
+        <option value="math">Math</option>
+    </select>
+    <br><br>
+
+    <label for="difficulty">Difficulty:</label>
+    <select name="difficulty" id="difficulty">
+        <option value="">Auto (based on your level)</option>
+        <option value="beginner">Beginner</option>
+        <option value="intermediate">Intermediate</option>
+        <option value="advanced">Advanced</option>
+    </select>
+    <br><br>
+
+    <button type="submit">Generate Exercise</button>
+</form>
+
+<hr>
+
+<a href="{% url 'exercise_history' %}">View My Exercise History</a>
+{% endblock %}

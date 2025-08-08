@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Exercise Result</h2>
+<p><strong>Sub-topic:</strong> {{ sub_topic }}</p>
+
+<hr>
+
+<h3>Exercise</h3>
+<p>{{ exercise }}</p>
+
+<div id="hints">
+    <button onclick="revealHint(1)">Show Hint 1</button>
+    <p id="hint1" style="display:none;"><strong>Hint 1:</strong> {{ hint1 }}</p>
+
+    <button onclick="revealHint(2)">Show Hint 2</button>
+    <p id="hint2" style="display:none;"><strong>Hint 2:</strong> {{ hint2 }}</p>
+
+    <button onclick="revealHint(3)">Show Hint 3</button>
+    <p id="hint3" style="display:none;"><strong>Hint 3:</strong> {{ hint3 }}</p>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="exercise_id" value="{{ exercise_id }}">
+    <input type="hidden" name="hint_count" id="hint_count" value="0">
+
+    <label for="student_answer">Your Answer:</label><br>
+    <input type="text" name="student_answer" required><br><br>
+
+    <button type="submit">Submit Answer</button>
+</form>
+
+{% if show_answer or message %}
+    <hr>
+    <h3>Result</h3>
+    {% if correct %}
+        <p style="color: green;"><strong>✅ Correct!</strong></p>
+    {% else %}
+        <p style="color: red;"><strong>❌ Incorrect.</strong></p>
+    {% endif %}
+
+    <p><strong>Correct Answer:</strong> {{ answer }}</p>
+    <p><strong>Your Rating:</strong> {{ rating }}/5</p>
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+{% endif %}
+
+<script>
+    let currentHint = 0;
+
+    function revealHint(number) {
+        if (number === 1 && document.getElementById("hint1").style.display === "none") {
+            document.getElementById("hint1").style.display = "block";
+            incrementHint();
+        }
+        if (number === 2 && document.getElementById("hint2").style.display === "none") {
+            document.getElementById("hint2").style.display = "block";
+            incrementHint();
+        }
+        if (number === 3 && document.getElementById("hint3").style.display === "none") {
+            document.getElementById("hint3").style.display = "block";
+            incrementHint();
+        }
+    }
+
+    function incrementHint() {
+        currentHint += 1;
+        document.getElementById("hint_count").value = currentHint;
+    }
+</script>
+
+<hr>
+<form action="{% url 'generate_exercise' %}" method="get">
+    <button type="submit">🎯 Generate Another Exercise</button>
+</form>
+
+
+
+{% endblock %}
+

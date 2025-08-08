@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Buy Course</title>
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+  <h1>Buy access for €10</h1>
+  <button id="checkout-button">Pay</button>
+
+  <script>
+    var stripe = Stripe("{{ stripe_public_key }}");
+    var checkoutButton = document.getElementById("checkout-button");
+
+    checkoutButton.addEventListener("click", function () {
+      stripe.redirectToCheckout({ sessionId: "{{ session_id }}" });
+    });
+  </script>
+</body>
+</html>

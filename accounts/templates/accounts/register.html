@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="container">
+    <h2>Register</h2>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <!-- Username -->
+      <div class="form-group">
+        <label for="id_username">Username:</label>
+        {{ form.username }}
+      </div>
+
+      <!-- Password 1 -->
+      <div class="form-group">
+        <label for="id_password1">Password:</label>
+        {{ form.password1 }}
+      </div>
+
+      <!-- Password 2 -->
+      <div class="form-group">
+        <label for="id_password2">Confirm Password:</label>
+        {{ form.password2 }}
+      </div>
+
+      <!-- User Type Dropdown -->
+      <div class="form-group">
+        <label for="user_type">Register as:</label>
+        <select name="user_type" id="user_type" class="form-control" required>
+          <option value="">-- Select Role --</option>
+          <option value="student">Student</option>
+          <option value="teacher">Teacher</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+
+    <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+  </div>
+{% endblock %}

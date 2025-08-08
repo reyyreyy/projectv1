@@ -1,0 +1,31 @@
+{% extends 'exercises/base.html' %}
+{% block content %}
+<!-- page content -->
+{% endblock %}
+
+{% extends 'base.html' %}
+{% block content %}
+  <h2>Your Past Exercises</h2>
+  {% if exercises %}
+    <table>
+      <tr>
+        <th>Date</th>
+        <th>Topic</th>
+        <th>Difficulty</th>
+        <th>Question</th>
+        <th>Answer</th>
+      </tr>
+      {% for ex in exercises %}
+        <tr>
+          <td>{{ ex.created_at|date:"Y-m-d H:i" }}</td>
+          <td>{{ ex.topic }}</td>
+          <td>{{ ex.difficulty }}</td>
+          <td>{{ ex.question|linebreaksbr }}</td>
+          <td>{{ ex.answer|linebreaksbr }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>You haven't generated any exercises yet.</p>
+  {% endif %}
+{% endblock %}

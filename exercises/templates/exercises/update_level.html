@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>Update Chemistry Level for {{ profile.user.username }}</h2>
+
+  <form method="post">
+    {% csrf_token %}
+    <label for="level">Select new level:</label>
+    <select name="level" id="level">
+      <option value="1" {% if profile.chemistry_level == 1 %}selected{% endif %}>Beginner</option>
+      <option value="2" {% if profile.chemistry_level == 2 %}selected{% endif %}>Intermediate</option>
+      <option value="3" {% if profile.chemistry_level == 3 %}selected{% endif %}>Advanced</option>
+    </select>
+    <br><br>
+    <button type="submit">Update</button>
+  </form>
+
+  <p><a href="{% url 'teacher_dashboard' %}">Back to dashboard</a></p>
+{% endblock %}

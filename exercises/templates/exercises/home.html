@@ -1,0 +1,28 @@
+{% extends "exercises/base.html" %}
+
+{% block content %}
+<h1>Welcome to ProjectV1 Learning Platform</h1>
+
+{% if user.is_authenticated %}
+    <p>Hello, {{ user.username }}!</p>
+
+    {% if is_superuser %}
+        <a href="{% url 'admin_dashboard' %}">Go to Admin Dashboard</a>
+    {% elif is_teacher %}
+        <a href="{% url 'teacher_dashboard' %}">Go to Teacher Dashboard</a>
+    {% else %}
+        <a href="{% url 'student_dashboard' %}">Go to Student Dashboard</a>
+    {% endif %}
+
+    <p><a href="{% url 'logout' %}">Logout</a></p>
+
+{% else %}
+    <h2>Login</h2>
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="{% url 'register' %}">Register here</a>.</p>
+{% endif %}
+{% endblock %}

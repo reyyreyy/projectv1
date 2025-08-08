@@ -1,0 +1,8 @@
+
+
+I want, after root login, the app to redirect every user to a dashboard. 
+In this dashboard there should be 3 entries: At the top Students and registration, lower Teachers, and Admins at the bottom.
+From there Students and new registred students end up in a new dashboard where they can choose from three Topics: Chemistry courses, Physics courses, or Mathematics courses. 
+Physics and mathematics topics are presently empty, we put innactive links to be filled later. tHe chemistry link should be active and contain the present generation exercices we have presently in our app.
+
+

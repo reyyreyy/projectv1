@@ -1,0 +1,27 @@
+{% extends 'exercises/base.html' %}
+
+{% block content %}
+  <h2>Register</h2>
+
+  {% if form.errors %}
+    <div style="color: red;">
+      <p>Please correct the errors below:</p>
+      <ul>
+        {% for field in form %}
+          {% for error in field.errors %}
+            <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+          {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Sign up</button>
+  </form>
+{% endblock %}

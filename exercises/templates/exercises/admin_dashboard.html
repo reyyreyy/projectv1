@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>Teacher Dashboard</h2>
+
+  <table border="1" cellpadding="8">
+    <thead>
+      <tr>
+        <th>Student</th>
+        <th>Chemistry Level</th>
+        <th>Average Rating</th>
+        <th>Total Ratings</th>
+        <th>Update Level</th>
+      </tr>
+    </thead>
+
+{% if profile.id %}
+  <a href="{% url 'update_student_level' profile.id %}">Update Level</a>
+{% else %}
+  <span style="color:red;">No profile</span>
+{% endif %}
+
+
+    <tbody>
+      {% for student in students %}
+        <tr>
+          <td>{{ student.username }}</td>
+          <td>{{ student.chemistry_level }}</td>
+          <td>{{ student.average_rating|floatformat:1 }}</td>
+          <td>{{ student.total }}</td>
+          <td><a href="{% url 'update_student_level' student.profile_id %}">Change Level</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

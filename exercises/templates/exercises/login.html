@@ -1,0 +1,23 @@
+{% extends 'exercises/base.html' %}
+{% block content %}
+
+<h2>Login</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+</form>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  {% if next %}
+    <input type="hidden" name="next" value="{{ next }}">
+  {% endif %}
+  <button type="submit">Login</button>
+</form>
+
+
+
+{% endblock %}
+
+

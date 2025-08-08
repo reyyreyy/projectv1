@@ -1,0 +1,11 @@
+<h2>Chemistry Exercise Generator</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Generate</button>
+</form>
+
+{% if exercise %}
+    <h3>Generated Exercise:</h3>
+    <p>{{ exercise|linebreaks }}</p>
+{% endif %}

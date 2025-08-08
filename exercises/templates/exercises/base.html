@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>projectv1</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'generate_exercise' %}">Home</a>
+        {% if user.is_authenticated %}
+            {% if user.is_superuser %}
+                <a href="/admin/">Admin</a>
+            {% elif is_teacher %}
+                <a href="{% url 'teacher_dashboard' %}">Teacher Dashboard</a>
+            {% endif %}
+            <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+        {% endif %}
+    </nav>
+    <hr>
+    {% block content %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,4 @@
+<form action="{% url 'create_checkout_session' %}" method="POST">
+  {% csrf_token %}
+  <button type="submit">Pay</button>
+</form>

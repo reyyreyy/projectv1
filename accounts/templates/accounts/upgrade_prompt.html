@@ -1,0 +1,13 @@
+<!-- accounts/templates/accounts/upgrade_prompt.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upgrade Needed</title>
+</head>
+<body>
+    <h1>Access Restricted</h1>
+    <p>You need to purchase a premium plan to access this page.</p>
+    <a href="{% url 'checkout' %}">Upgrade Now</a><br>
+    <a href="{% url 'logout' %}">Logout</a>
+</body>
+</html>

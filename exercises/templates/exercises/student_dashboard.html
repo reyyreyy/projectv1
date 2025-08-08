@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, {{ user.username }}!</h1>
+	<p>Your current difficulty level is: <strong>{{ request.user.profile.get_difficulty_display }}</strong></p>
+<a href="{% url 'update_difficulty' %}">Change difficulty level</a>
+    <p><a href="{% url 'logout' %}">Logout</a></p>
+</body>
+</html>
