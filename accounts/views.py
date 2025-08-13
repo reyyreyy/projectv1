@@ -7,6 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from .models import Profile
 from django.contrib.auth.models import Group
+from django.views.decorators.http import require_http_methods
+from django.core.exceptions import NoReverseMatch
 
 #stripe
 import stripe
@@ -106,11 +108,13 @@ def premium_dashboard(request):
         'selected_difficulty': selected_difficulty,
     })
 
-
-
+@require_http_methods(['GET', 'POST'])
 def logout_view(request):
     logout(request)
-    return redirect('login')  # Redirect to login page after logout
+    try:
+        return redirect(reverse('home'))
+    except NoReverseMatch:
+        return redirect('/')
 
        
 #stripe
@@ -152,16 +156,3 @@ def update_difficulty(request):
     else:
         form = DifficultyForm(instance=profile)
     return render(request, 'accounts/update_difficulty.html', {'form': form})
-
-
-
-
-
-
-
-
-
-
-
-
-
