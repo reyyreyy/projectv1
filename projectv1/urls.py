@@ -6,7 +6,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', dashboard_router, name='home'),            # role-based landing
     path('accounts/', include('accounts.urls')),        # our register view
-    path('accounts/', include('django.contrib.auth.urls')),  # built-in login/logout/password
     path('exercises/', include('exercises.urls')),
     path('payments/', include('payments.urls')),        # optional
 ]
