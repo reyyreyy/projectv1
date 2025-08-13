@@ -8,4 +8,5 @@ urlpatterns = [
     path('register/', register_view, name='register'),   # ✅ custom register page
     path('dashboard/', views.dashboard, name='dashboard'),
     path('premium-dashboard/', views.premium_dashboard, name='premium_dashboard'),
+    path('logout/', views.logout_view, name='logout'),
 ]
