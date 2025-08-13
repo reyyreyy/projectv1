@@ -1,92 +1,37 @@
-
+```python
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import csrf_exempt
 from .models import Exercise, ExerciseRating, SubTopicPerformance
 from datetime import date, datetime
 from openai import OpenAI
 import os
-
-
-
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.views.decorators.csrf import csrf_exempt
-from django.conf import settings
 from dotenv import load_dotenv
-from openai import OpenAI, OpenAIError
-from django.contrib.admin.views.decorators import staff_member_required
-from django.db.models import Avg, Count, Sum
-
-from .forms import ExerciseRequestForm
-
-from .models import (
-    Exercise,
-    ExerciseRating,
-    SubTopicPerformance,
-    TopicRatingHistory
-)
-
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login  # 🔹 Add this import
-from django.contrib.auth.models import User
-from accounts.models import Profile  # ✅ Adjust if Profile is in another app
-#from django.shortcuts import redirect
-
-
-
-import os
-from dotenv import load_dotenv
-from django.contrib.auth import login, authenticate
-from django.shortcuts import redirect
-from django.contrib.auth.forms import AuthenticationForm
-
-from django.contrib.auth.decorators import login_required
-
-
-from datetime import date, datetime
-
 
 load_dotenv()  # Load .env file
-
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-from django.contrib.auth.models import Group
+from .forms import ExerciseRequestForm
+from accounts.models import Profile  # Adjust if Profile is in another app
 
-
-
-# Load .env and configure OpenAI client
-#load_dotenv()
-#client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-########################################
-
-#########################################
-
-
-
-# ✅ Define helpers before using them
+# Utility functions
 def is_teacher_or_superuser(user):
     return user.is_superuser or user.groups.filter(name='Teachers').exists()
 
-# Utility to check teacher group
 def is_teacher(user):
     return user.is_authenticated and user.groups.filter(name='Teacher').exists()
+
+def is_student(user):
+    return not is_teacher_or_superuser(user)
 
 @login_required
 def dashboard_router(request):
     user = request.user
     if user.is_superuser:
-        return redirect('/admin/')                 # ✅ go to Django Admin
+        return redirect('/admin/')
     if is_teacher(user):
-        return redirect('teacher_dashboard')       # make sure this URL name exists
-    return redirect('student_dashboard')           # default for students
-
-
-def is_student(user):
-    return not is_teacher_or_superuser(user)
-
-# ✅ Now decorators can use them safely
-
+        return redirect('teacher_dashboard')
+    return redirect('student_dashboard')
 
 def custom_login(request):
     if request.method == 'POST':
@@ -94,7 +39,6 @@ def custom_login(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            # Redirect based on role
             if user.is_superuser:
                 return redirect('/admin/')
             elif user.groups.filter(name='Teacher').exists():
@@ -106,14 +50,12 @@ def custom_login(request):
     
     return render(request, 'exercises/login.html', {'form': form})
 
-
 def home_view(request):
     user = request.user
     return render(request, 'exercises/home.html', {
         'is_superuser': user.is_superuser if user.is_authenticated else False,
         'is_teacher': user.groups.filter(name='Teacher').exists() if user.is_authenticated else False,
     })
-
 
 @login_required
 def redirect_after_login(request):
@@ -123,9 +65,6 @@ def redirect_after_login(request):
         return redirect('teacher_dashboard')
     else:
         return redirect('generate_exercise')
-
-
-
 
 @login_required
 def admin_dashboard(request):
@@ -138,9 +77,6 @@ def teacher_dashboard(request):
 @login_required
 def student_dashboard(request):
     return render(request, 'exercises/student_dashboard.html')
-
-
-
 
 @login_required
 @user_passes_test(is_teacher_or_superuser)
@@ -156,8 +92,6 @@ def update_student_level(request, profile_id):
         'levels': [(1, 'Beginner'), (2, 'Intermediate'), (3, 'Advanced')]
     })
 
-
-# Utility function to limit exercises for free users
 def can_generate_exercise(profile, topic):
     if profile.has_paid:
         return True
@@ -171,20 +105,6 @@ def can_generate_exercise(profile, topic):
     if (weekday == 0 and today_count < 2) or (weekday == 2 and today_count < 1):
         return True
     return False
-
-
-
-
-##################################################
-####################################################
-
-
-
-
-
-
-
-
 
 @login_required(login_url='/exercises/login/')
 def generate_exercise(request):
@@ -299,16 +219,10 @@ def generate_exercise(request):
         }.get(user.profile.chemistry_level, 'Unknown')
     })
 
-
-
-#############################################################
-#############################################################
-
 @csrf_exempt
 @login_required(login_url='/exercises/login/')
 def retry_exercise(request):
     user = request.user
-    # ✅ Ensure profile exists
     Profile.objects.get_or_create(user=user)
 
     if request.method == 'POST':
@@ -351,18 +265,11 @@ def retry_exercise(request):
                 'answer': f"Error: {str(e)}"
             })
 
-
 @login_required(login_url='/exercises/login/')
 def exercise_history(request):
     user = request.user
-    # ✅ Ensure profile exists
     Profile.objects.get_or_create(user=user)
 
     exercises = Exercise.objects.filter(user=user).order_by('-created_at')
     return render(request, 'exercises/history.html', {'exercises': exercises})
-
-##########################################
-
-
-
-
+```
