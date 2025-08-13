@@ -1,7 +1,7 @@
-```python
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 from .models import Exercise, ExerciseRating, SubTopicPerformance
 from datetime import date, datetime
 from openai import OpenAI
@@ -51,11 +51,7 @@ def custom_login(request):
     return render(request, 'exercises/login.html', {'form': form})
 
 def home_view(request):
-    user = request.user
-    return render(request, 'exercises/home.html', {
-        'is_superuser': user.is_superuser if user.is_authenticated else False,
-        'is_teacher': user.groups.filter(name='Teacher').exists() if user.is_authenticated else False,
-    })
+    return HttpResponse('Home OK')
 
 @login_required
 def redirect_after_login(request):
@@ -272,4 +268,3 @@ def exercise_history(request):
 
     exercises = Exercise.objects.filter(user=user).order_by('-created_at')
     return render(request, 'exercises/history.html', {'exercises': exercises})
-```
