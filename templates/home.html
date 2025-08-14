@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Home - projectv1{% endblock %}
+{% block content %}
+<div class='p-5 bg-white rounded-3 shadow-sm'>
+  <h1 class='h3 mb-3'>Welcome to projectv1</h1>
+  <p class='mb-4'>Chemistry exercises: generate and rate.</p>
+  {% if request.user.is_authenticated %}
+    <a class='btn btn-primary' href='/exercises/student-dashboard/'>Go to Dashboard</a>
+  {% else %}
+    <a class='btn btn-primary me-2' href='/login/'>Login</a>
+    <a class='btn btn-outline-secondary' href='/register/'>Register</a>
+  {% endif %}
+</div>
+{% endblock %}
