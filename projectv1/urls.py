@@ -1,12 +1,13 @@
 from django.contrib import admin
-from django.urls import path, include
-from exercises.views import dashboard_router  # or home_view if you prefer
+from django.urls import path
+from accounts.views import login_view, register_view, logout_view
+from exercises.views import home_view, student_dashboard
 
 urlpatterns = [
+    path('', home_view, name='home'),
+    path('login/', login_view, name='login'),
+    path('register/', register_view, name='register'),
+    path('logout/', logout_view, name='logout'),
+    path('exercises/student-dashboard/', student_dashboard, name='student_dashboard'),
     path('admin/', admin.site.urls),
-    path('', dashboard_router, name='home'),            # role-based landing
-    path('accounts/', include('accounts.urls')),        # our register view
-    path('accounts/', include('django.contrib.auth.urls')),  # built-in login/logout/password
-    path('exercises/', include('exercises.urls')),
-    path('payments/', include('payments.urls')),        # optional
 ]
