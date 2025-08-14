@@ -110,7 +110,7 @@ def premium_dashboard(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('login')  # Redirect to login page after logout
+    return redirect(reverse('accounts:login') or '/accounts/login/' or '/')  # Redirect to login page after logout
 
        
 #stripe
@@ -152,16 +152,3 @@ def update_difficulty(request):
     else:
         form = DifficultyForm(instance=profile)
     return render(request, 'accounts/update_difficulty.html', {'form': form})
-
-
-
-
-
-
-
-
-
-
-
-
-
