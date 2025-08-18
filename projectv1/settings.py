@@ -49,6 +49,8 @@ INSTALLED_APPS = [
 ]
 
 
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -131,7 +133,8 @@ LOGIN_REDIRECT_URL = '/redirect-after-login/'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "/static/", STATIC_ROOT = BASE_DIR / "staticfiles"
+MEDIA_URL = "/media/", MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -140,8 +143,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/exercises/generate/'
 
 
-# Add at the bottom
-STRIPE_PUBLIC_KEY = 'pk_live_51RrIqqGqHQTj03nvyUdI3iPbx1yf2F3nTQKfelx6mTYgDwfd4S0GVerYzCmPzGWzTFbjPM4i7YHuAVjDxLQNpXh000YVEKp8jt'
-STRIPE_SECRET_KEY = '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'
-OPENAI_API_KEY = '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'
+
 
