@@ -32,3 +32,6 @@ Thumbs.db
 # Secrets
 .env
 .env.*
+.env
+.env
+GPT_GITHUB_KEYS.txt
