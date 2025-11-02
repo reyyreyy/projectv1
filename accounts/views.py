@@ -1,167 +1,32 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
-from .models import Profile
-from django.contrib.auth.models import Group
+from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_http_methods
 
-#stripe
-import stripe
-from django.conf import settings
-
-
-from .forms import CustomUserCreationForm
-
-def register_view(request):
+@csrf_protect
+@require_http_methods(['GET','POST'])
+def login_view(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        user_type = request.POST.get('user_type')  # "student" or "teacher"
-        if form.is_valid() and user_type in ('student', 'teacher'):
-            user = form.save()
-            group = Group.objects.get(name='Teacher' if user_type == 'teacher' else 'Student')
-            user.groups.add(group)
-            login(request, user)
-            return redirect('dashboard_router')  # or 'home'
-    else:
-        form = UserCreationForm()
+        username = (request.POST.get('username') or '').strip()
+        password = request.POST.get('password') or ''
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            auth_login(request, user)
+            return redirect('/exercises/student-dashboard/')
+        return render(request, 'accounts/login.html', {'error': 'Invalid username or password.'})
+    return render(request, 'accounts/login.html')
+
+@csrf_protect
+@require_http_methods(['GET','POST'])
+def register_view(request):
+    form = UserCreationForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        return redirect('/login/')
     return render(request, 'accounts/register.html', {'form': form})
 
-
-def register_view(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        user_type = request.POST.get('user_type')
-
-        if form.is_valid() and user_type in ['student', 'teacher']:
-            user = form.save()
-
-            # Don't create Profile manually here; it's handled by signals.py
-
-            group = Group.objects.get(name='Teacher' if user_type == 'teacher' else 'Student')
-            user.groups.add(group)
-
-            login(request, user)
-            return redirect('home')  # Or your appropriate dashboard route
-    else:
-        form = UserCreationForm()
-    return render(request, 'accounts/register.html', {'form': form})
-
-
-@login_required
-def home(request):
-    return render(request, 'accounts/home.html')
-
-@login_required
-def dashboard(request):
-    user = request.user
-    difficulty = getattr(user.profile, 'difficulty', 'not set')
-
-    return render(request, 'accounts/dashboard.html', {
-        'user': user,
-        'difficulty': difficulty
-    })
-    
-#@login_required
-#def premium_dashboard(request):
-#   if not request.user.profile.is_paid_user:
-#       return redirect('checkout')  # or 'payments:checkout' depending on your urls
-#   return render(request, 'premium/dashboard.html')
-
-
-# @login_required
-# def premium_dashboard(request):
-    # try:
-        # profile = request.user.profile
-        # if profile.has_paid:
-            # difficulty = getattr(profile, 'difficulty', 'not set')
-            # return render(request, 'accounts/premium_dashboard.html', {
-                # 'user': request.user,
-                # 'difficulty': difficulty
-            # })
-        # else:
-            # return render(request, 'accounts/upgrade_prompt.html')
-    # except Profile.DoesNotExist:
-        # return render(request, 'accounts/upgrade_prompt.html')
-
-	
-
-from exercises.models import Exercise  # import if not yet done
-
-@login_required
-def premium_dashboard(request):
-    profile = request.user.profile
-    selected_difficulty = request.GET.get('difficulty')
-    if selected_difficulty:
-        exercises = Exercise.objects.filter(user=request.user, difficulty=selected_difficulty)
-    else:
-        exercises = Exercise.objects.filter(user=request.user)
-
-    return render(request, 'accounts/premium_dashboard.html', {
-        'user': request.user,
-        'difficulty': profile.difficulty,
-        'exercises': exercises,
-        'selected_difficulty': selected_difficulty,
-    })
-
-
-
+@require_http_methods(['GET','POST'])
 def logout_view(request):
     logout(request)
-    return redirect('login')  # Redirect to login page after logout
-
-       
-#stripe
-stripe.api_key = settings.STRIPE_SECRET_KEY
-
-def payment_view(request):
-    session = stripe.checkout.Session.create(
-        payment_method_types=['card'],
-        line_items=[{
-            'price_data': {
-                'currency': 'eur',
-                'unit_amount': 1000,  # €10.00
-                'product_data': {
-                    'name': 'Access to Course',
-                },
-            },
-            'quantity': 1,
-        }],
-        mode='payment',
-        success_url='http://127.0.0.1:8000/success/',
-        cancel_url='http://127.0.0.1:8000/cancel/',
-    )
-    return render(request, 'payment.html', {
-        'session_id': session.id,
-        'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
-    })
-
-
-from .forms import DifficultyForm
-
-@login_required
-def update_difficulty(request):
-    profile = request.user.profile
-    if request.method == 'POST':
-        form = DifficultyForm(request.POST, instance=profile)
-        if form.is_valid():
-            form.save()
-            return redirect('generate_exercise')  # or another page
-    else:
-        form = DifficultyForm(instance=profile)
-    return render(request, 'accounts/update_difficulty.html', {'form': form})
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return redirect('/login/')
