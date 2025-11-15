@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Register - projectv1{% endblock %}
+{% block content %}
+<div class='row justify-content-center'>
+  <div class='col-md-6'>
+    <div class='card shadow-sm'>
+      <div class='card-body'>
+        <h1 class='h4 mb-3'>Register</h1>
+        <form method='post' novalidate>
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+          <div class='mb-3'>
+            <label class='form-label'>Username</label>
+            {{ form.username|add_class:'form-control' }}
+          </div>
+          <div class='mb-3'>
+            <label class='form-label'>Password</label>
+            {{ form.password1|add_class:'form-control' }}
+          </div>
+          <div class='mb-3'>
+            <label class='form-label'>Confirm Password</label>
+            {{ form.password2|add_class:'form-control' }}
+          </div>
+          <button class='btn btn-primary'>Create account</button>
+          <a class='btn btn-link' href='/login/'>Back to login</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
