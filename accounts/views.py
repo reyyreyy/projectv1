@@ -12,7 +12,6 @@ from django.contrib.auth.models import Group
 import stripe
 from django.conf import settings
 
-
 from .forms import CustomUserCreationForm
 
 def register_view(request):
@@ -28,7 +27,6 @@ def register_view(request):
     else:
         form = UserCreationForm()
     return render(request, 'accounts/register.html', {'form': form})
-
 
 def register_view(request):
     if request.method == 'POST':
@@ -49,7 +47,6 @@ def register_view(request):
         form = UserCreationForm()
     return render(request, 'accounts/register.html', {'form': form})
 
-
 @login_required
 def home(request):
     return render(request, 'accounts/home.html')
@@ -63,30 +60,6 @@ def dashboard(request):
         'user': user,
         'difficulty': difficulty
     })
-    
-#@login_required
-#def premium_dashboard(request):
-#   if not request.user.profile.is_paid_user:
-#       return redirect('checkout')  # or 'payments:checkout' depending on your urls
-#   return render(request, 'premium/dashboard.html')
-
-
-# @login_required
-# def premium_dashboard(request):
-    # try:
-        # profile = request.user.profile
-        # if profile.has_paid:
-            # difficulty = getattr(profile, 'difficulty', 'not set')
-            # return render(request, 'accounts/premium_dashboard.html', {
-                # 'user': request.user,
-                # 'difficulty': difficulty
-            # })
-        # else:
-            # return render(request, 'accounts/upgrade_prompt.html')
-    # except Profile.DoesNotExist:
-        # return render(request, 'accounts/upgrade_prompt.html')
-
-	
 
 from exercises.models import Exercise  # import if not yet done
 
@@ -106,13 +79,10 @@ def premium_dashboard(request):
         'selected_difficulty': selected_difficulty,
     })
 
-
-
 def logout_view(request):
     logout(request)
-    return redirect('login')  # Redirect to login page after logout
+    return redirect('/')  # Redirect to home page after logout
 
-       
 #stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -138,7 +108,6 @@ def payment_view(request):
         'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
     })
 
-
 from .forms import DifficultyForm
 
 @login_required
@@ -152,16 +121,3 @@ def update_difficulty(request):
     else:
         form = DifficultyForm(instance=profile)
     return render(request, 'accounts/update_difficulty.html', {'form': form})
-
-
-
-
-
-
-
-
-
-
-
-
-
